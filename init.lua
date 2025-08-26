@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -105,7 +105,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+-- vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -851,6 +851,29 @@ require('lazy').setup({
       vim.cmd.hi 'Comment gui=none'
     end,
   },
+
+  -- {
+  --   'catppuccin/nvim',
+  --   priority = 1000,
+  --   name = 'catppuccin',
+  --   init = function()
+  --     vim.cmd.colorscheme 'catppuccin-mocha'
+  --   end,
+  -- },
+
+  -- {
+  --   'sainnhe/gruvbox-material',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.g.gruvbox_material_background = 'medium'
+  --     vim.g.gruvbox_material_ui_contrast = 'high'
+  --     vim.g.gruvbox_material_better_performance = 1
+  --     vim.g.gruvbox_material_enable_italic = true
+  --     vim.g.gruvbox_material_foreground = 'original'
+  --     vim.cmd.colorscheme 'gruvbox-material'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
