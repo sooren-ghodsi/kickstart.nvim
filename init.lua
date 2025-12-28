@@ -1,25 +1,5 @@
 --[[
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
 What is Kickstart?
 
   Kickstart.nvim is *not* a distribution.
@@ -91,7 +71,10 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+
+-- Set term GUI colors
+vim.o.termguicolors = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -102,7 +85,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -114,14 +97,18 @@ vim.o.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.o.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.o.clipboard = 'unnamedplus'
+-- end)
 
 -- Enable break indent
 vim.o.breakindent = true
 
--- Save undo history
+-- Disable swapfiles and backups
+vim.o.swapfile = false
+vim.o.writebackup = false
+
+-- Save (persistent) undo history
 vim.o.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
@@ -130,6 +117,9 @@ vim.o.smartcase = true
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
+
+-- Vertical lines guiding line length
+vim.o.colorcolumn = '80'
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -155,11 +145,13 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
 
--- Show which line your cursor is on
+-- Show which line/column your cursor is on
 vim.o.cursorline = true
+vim.o.cursorcolumn = true
 
--- Minimal number of screen lines to keep above and below the cursor.
+-- Minimal number of screen lines/columns to keep around the cursor.
 vim.o.scrolloff = 10
+vim.o.sidescrolloff = 5
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -176,6 +168,9 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Open the Netrw file explorer
+vim.keymap.set('n', '<leader>e', '<cmd>Explore<CR>', { desc = 'Open file [E]xplorer' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -185,10 +180,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -198,12 +193,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -441,7 +430,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
+          -- winblend = 10,
           previewer = false,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
@@ -572,17 +561,13 @@ require('lazy').setup({
           --  the definition of its *type*, not where it was *defined*.
           map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
+          -- Check whether an LSP client supports a given method (optionally per-buffer)
           ---@param client vim.lsp.Client
           ---@param method vim.lsp.protocol.Method
           ---@param bufnr? integer some lsp support methods only in specific files
           ---@return boolean
           local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              return client.supports_method(method, { bufnr = bufnr })
-            end
+            return client:supports_method(method, bufnr)
           end
 
           -- The following two autocommands are used to highlight references of the
@@ -671,20 +656,32 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        clangd = {}, -- C/C++
+        pyright = {}, -- Python
+        jdtls = {}, -- Java
+        bashls = {}, -- Shell/sh/zsh
+
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
+        ts_ls = {}, -- TypeScript/JavaScript
+        eslint = {}, -- TypeScript/JavaScript
 
-        lua_ls = {
+        marksman = {}, -- Markdown
+        jsonls = {}, -- JSON/JSONC
+        -- TODO: terraform/tf, sql
+        yamlls = {}, -- YAML
+        dockerls = {}, -- Dockerfile
+        docker_compose_language_service = {}, -- Docker Compose
+        lemminx = {}, -- XML
+        taplo = {}, -- TOML
+        html = {}, -- HTML
+        cssls = {}, -- CSS/SCSS
+        emmet_ls = {}, -- HTML and CSS/SCSS
+        lua_ls = { -- Lua
           -- cmd = { ... },
           -- filetypes = { ... },
           -- capabilities = {},
@@ -733,9 +730,66 @@ require('lazy').setup({
           end,
         },
       }
+
+      vim.lsp.config('sourcekit', { -- Swift
+        cmd = { 'sourcekit-lsp' },
+      })
+      vim.lsp.enable 'sourcekit'
     end,
   },
+  { -- Linter
+    'mfussenegger/nvim-lint',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local lint = require 'lint'
+      lint.linters_by_ft = {
+        c = { 'clang_tidy' },
+        cpp = { 'clang_tidy' },
 
+        python = { 'ruff' },
+
+        java = { 'checkstyle' },
+
+        bash = { 'shellcheck' },
+        sh = { 'shellcheck' },
+        zsh = { 'shellcheck' },
+
+        typescript = { 'eslint_d' },
+        javascript = { 'eslint_d' },
+        typescriptreact = { 'eslint_d' },
+        javascriptreact = { 'eslint_d' },
+
+        markdown = { 'markdownlint' },
+
+        json = { 'jsonlint' },
+        jsonc = { 'jsonlint' },
+
+        yaml = { 'yamllint' },
+
+        dockerfile = { 'hadolint' },
+
+        xml = { 'xmllint' },
+
+        toml = { 'taplo' },
+
+        html = { 'eslint_d' },
+
+        css = { 'stylelint' },
+        scss = { 'stylelint' },
+
+        lua = { 'luacheck' },
+
+        swift = { 'swiftlint' },
+      }
+
+      -- Run lint on save
+      vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave' }, {
+        callback = function()
+          lint.try_lint()
+        end,
+      })
+    end,
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -767,12 +821,47 @@ require('lazy').setup({
         end
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        python = { 'ruff_organize_imports', 'ruff_format' },
+
+        java = { 'google-java-format' },
+
+        bash = { 'shfmt' },
+        sh = { 'shfmt' },
+        zsh = { 'shfmt' },
+
+        typescript = { 'prettierd' },
+        javascript = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+
+        markdown = { 'prettierd' },
+
+        json = { 'prettierd' },
+        jsonc = { 'prettierd' },
+
+        yaml = { 'prettierd' },
+
+        dockerfile = { 'prettierd' },
+
+        xml = { 'xmllint' },
+
+        toml = { 'taplo' },
+
+        html = { 'prettierd' },
+
+        css = { 'prettierd' },
+        scss = { 'prettierd' },
+
+        lua = { 'stylua' },
+
+        swift = { 'swiftformat' },
+
+        -- Any filetype (fallback)
+        ['_'] = { 'trim_whitespace' },
       },
     },
   },
@@ -881,25 +970,113 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'rebelot/kanagawa.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
+      require('kanagawa').setup {
+        compile = true, -- faster startup
+        undercurl = true, -- diagnostics
+        commentStyle = { italic = false },
+        functionStyle = {},
+        keywordStyle = { italic = false, bold = false },
+        statementStyle = { bold = true },
+        typeStyle = {},
+        transparent = false, -- do not change
+        dimInactive = false,
+        terminalColors = true,
+        colors = {
+          palette = {},
+          theme = {
+            wave = {},
+            lotus = {},
+            dragon = {},
+            all = {
+              ui = {
+                bg_gutter = 'none',
+              },
+            },
+          },
+        },
+
+        overrides = function(colors)
+          local theme = colors.theme
+          return {
+            -- Transparent backgrounds for floating windows
+            NormalFloat = { bg = 'none' },
+            FloatBorder = { bg = 'none', fg = theme.ui.float.fg_border },
+            FloatTitle = { bg = 'none', fg = theme.ui.float.fg },
+
+            -- Telescope borderless setup (modern look)
+            TelescopeTitle = { fg = theme.ui.special, bold = true },
+            TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+            TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+            TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+            TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+            TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+            TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+
+            -- Dark completion menu
+            Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1, blend = 10 },
+            PmenuSel = { fg = 'NONE', bg = theme.ui.bg_p2 },
+            PmenuSbar = { bg = theme.ui.bg_m1 },
+            PmenuThumb = { bg = theme.ui.bg_p2 },
+
+            -- Better diff colors
+            DiffAdd = { bg = theme.diff.add, fg = 'NONE' },
+            DiffChange = { bg = theme.diff.change, fg = 'NONE' },
+            DiffDelete = { bg = theme.diff.delete, fg = 'NONE' },
+            DiffText = { bg = theme.diff.text, fg = 'NONE' },
+
+            -- Cleaner indent-blankline
+            IblIndent = { fg = theme.ui.bg_p1 },
+            IblScope = { fg = theme.ui.special },
+
+            -- Better Mason/Lazy windows
+            LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+            MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+
+            -- Enhance cursor line
+            CursorLine = { bg = theme.ui.bg_p1 },
+            CursorLineNr = { fg = theme.diag.warning, bold = true },
+
+            -- Make comments more visible but not distracting
+            Comment = { fg = theme.syn.comment, italic = true },
+          }
+        end,
+
+        theme = 'dragon',
+        background = {
+          dark = 'dragon',
+          light = 'lotus',
         },
       }
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- any other, such as 'kanagawa-dragon', 'kanagawa-wave', or 'kanagawa-lotus'.
+      vim.cmd.colorscheme 'kanagawa-dragon'
+
+      -- Compile cache after first load for faster subsequent startups
+      vim.cmd 'KanagawaCompile'
     end,
+
+    -- 'sainnhe/gruvbox-material',
+    -- priority = 1000,
+    -- config = function()
+    --   vim.g.gruvbox_material_background = 'hard'
+    --   vim.g.gruvbox_material_enable_bold = 1
+    --   vim.g.gruvbox_material_enable_italic = 1
+    --   vim.g.gruvbox_material_better_performance = 1
+    --   vim.cmd.colorscheme 'gruvbox-material'
+    -- end,
   },
 
-  -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { -- Highlight todo, notes, etc in comments
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -941,27 +1118,76 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    config = function()
+      -- Install parsers
+      require('nvim-treesitter').install {
+        'diff',
+        'query',
+        'vim',
+        'vimdoc',
+        'markdown',
+        'markdown_inline',
+        'c',
+        'cpp',
+        'python',
+        'java',
+        'bash',
+        'sh',
+        'typescript',
+        'javascript',
+        'typescriptreact',
+        'javascriptreact',
+        'json',
+        'jsonc',
+        'yaml',
+        'dockerfile',
+        'xml',
+        'toml',
+        'html',
+        'css',
+        'scss',
+        'lua',
+        'luadoc',
+        'swift',
+
+        'sql',
+
+        'terraform',
+        'tf',
+      }
+
+      require('nvim-treesitter').setup {
+        -- Autoinstall languages that are not installed
+        auto_install = true,
+        highlight = {
+          enable = true,
+          -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+          --  If you are experiencing weird indenting issues, add the language to
+          --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+          additional_vim_regex_highlighting = { 'ruby' },
+        },
+        indent = { enable = true, disable = { 'ruby' } },
+      }
+      -- There are additional nvim-treesitter modules that you can use to interact
+      -- with nvim-treesitter. You should go explore a few and see what interests you:
+      --
+      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+
+      -- Folds, provided by Neovim
+      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo.foldmethod = 'expr'
+      vim.wo.foldenable = false
+
+      -- Attach Treesitter per buffer
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
+      })
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
