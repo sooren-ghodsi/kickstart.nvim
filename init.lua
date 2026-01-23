@@ -101,8 +101,11 @@ vim.o.showmode = false
 --   vim.o.clipboard = 'unnamedplus'
 -- end)
 
--- Enable break indent
+-- Indent wrapped lines
 vim.o.breakindent = true
+
+-- Visual prefix for soft-wrapped line
+vim.opt.showbreak = '↪ '
 
 -- Disable swapfiles and backups
 vim.o.swapfile = false
@@ -114,6 +117,12 @@ vim.o.undofile = true
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
+-- Tab rules
+vim.o.expandtab = true
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
@@ -205,6 +214,29 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Markdown, plain text, and Git commit messages: soft wrap + textwidth
+local wrap_group = vim.api.nvim_create_augroup('WrapConfig', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+  group = wrap_group,
+  pattern = { 'md', 'markdown', 'txt', 'text' },
+  callback = function()
+    vim.wo.wrap = true
+    vim.wo.linebreak = true
+    vim.bo.textwidth = 80
+    vim.bo.formatoptions = vim.bo.formatoptions .. 't'
+  end,
+})
+vim.api.nvim_create_autocmd('FileType', {
+  group = wrap_group,
+  pattern = 'gitcommit',
+  callback = function()
+    vim.wo.wrap = true
+    vim.wo.linebreak = true
+    vim.bo.textwidth = 72
+    vim.bo.formatoptions = vim.bo.formatoptions .. 't'
   end,
 })
 
@@ -768,8 +800,6 @@ require('lazy').setup({
 
         dockerfile = { 'hadolint' },
 
-        xml = { 'xmllint' },
-
         toml = { 'taplo' },
 
         html = { 'eslint_d' },
@@ -861,7 +891,7 @@ require('lazy').setup({
         swift = { 'swiftformat' },
 
         -- Any filetype (fallback)
-        ['_'] = { 'trim_whitespace' },
+        ['_'] = { 'trim_whitespace', 'trim_newlines' },
       },
     },
   },
@@ -1133,13 +1163,9 @@ require('lazy').setup({
         'python',
         'java',
         'bash',
-        'sh',
         'typescript',
         'javascript',
-        'typescriptreact',
-        'javascriptreact',
         'json',
-        'jsonc',
         'yaml',
         'dockerfile',
         'xml',
@@ -1154,7 +1180,6 @@ require('lazy').setup({
         'sql',
 
         'terraform',
-        'tf',
       }
 
       require('nvim-treesitter').setup {
